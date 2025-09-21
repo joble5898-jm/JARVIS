@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JARVIS Social Impact</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+        
+        :root {
+            --primary-color: #00e0ff;
+            --secondary-color: #33aaff;
+            --accent-color: #8aff8a;
+            --bg-dark: #0a0a1a;
+            --bg-medium: #1a1a2e;
+            --text-light: #e0e0e0;
+            --text-muted: #8888aa;
+            --highlight-blue: #00bfff;
+        }
+
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+            position: relative;
+            overflow: hidden;
+            transition: background-color 0.5s ease;
+        }
+
+        .background-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: radial-gradient(circle at 10% 20%, rgba(0, 0, 0, 0) 50%, var(--primary-color) 100%),
+                        linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 50%),
+                        linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 0%, transparent 50%);
+            animation: pulse-glow 20s linear infinite alternate;
+        }
+        
+        .star-field {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: transparent;
+        }
+
+        @keyframes pulse-glow {
+            0% { transform: scale(1.0); opacity: 1; }
+            100% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .intro-container {
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .intro-container:hover {
+            transform: scale(1.05);
+        }
+
+        .hologram-effect {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle, rgba(0, 224, 255, 0.3) 0%, transparent 60%);
+            animation: glow-pulse 3s infinite;
+        }
+
+        .hologram-effect::before, .hologram-effect::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid var(--primary-color);
+            transform: translate(-50%, -50%);
+            animation: ring-grow 3s infinite;
+        }
+
+        .hologram-effect::after {
+            animation-delay: 1.5s;
+        }
+
+        @keyframes glow-pulse {
+            0% { box-shadow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-color); }
+            50% { box-shadow: 0 0 20px var(--primary-color), 0 0 40px var(--primary-color); }
+            100% { box-shadow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-color); }
+        }
+
+        @keyframes ring-grow {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1.2); opacity: 0; }
+        }
+
+        .jarvis-logo-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5rem; /* Larger font size for the logo */
+            font-weight: bold;
+            color: var(--primary-color);
+            text-shadow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-color), 0 0 30px var(--primary-color);
+            animation: text-glow 2s infinite alternate;
+            transition: transform 0.3s ease;
+        }
+
+        .jarvis-logo-text:hover {
+            transform: scale(1.1);
+        }
+        
+        @keyframes text-glow {
+            0% { text-shadow: 0 0 5px var(--primary-color); }
+            100% { text-shadow: 0 0 20px var(--primary-color), 0 0 40px var(--primary-color); }
+        }
+
+        .chat-container, .portfolio-container {
+            width: 100%;
+            max-width: 640px;
+            height: 80vh;
+            display: none; /* Initially hidden */
+            flex-direction: column;
+            background-color: rgba(26, 26, 46, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 20px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            border: 2px solid var(--secondary-color);
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+        
+        .portfolio-container {
+            padding: 1.5rem;
+        }
+
+        .chat-header {
+            background-color: var(--bg-medium);
+            color: var(--primary-color);
+            padding: 1.5rem;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.8rem;
+            border-bottom: 2px solid var(--primary-color);
+            box-shadow: 0 2px 10px var(--primary-color);
+            text-shadow: 0 0 8px var(--primary-color);
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            -ms-overflow-style: none; /* for Internet Explorer, Edge */
+            scrollbar-width: none; /* for Firefox */
+        }
+        .chat-messages::-webkit-scrollbar {
+            display: none; /* for Chrome, Safari, and Opera */
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 0.85rem 1.2rem;
+            border-radius: 1rem;
+            word-wrap: break-word;
+            animation: message-fade-in 0.5s ease-out;
+            transition: transform 0.3s ease;
+        }
+        
+        .message:hover {
+            transform: translateY(-2px);
+        }
+
+        @keyframes message-fade-in {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            background-color: var(--highlight-blue);
+            color: var(--bg-dark);
+            align-self: flex-end;
+            border-bottom-right-radius: 0.25rem;
+            box-shadow: 0 0 10px var(--highlight-blue);
+        }
+
+        .message.ai {
+            background-color: var(--bg-medium);
+            color: var(--primary-color);
+            align-self: flex-start;
+            border: 1px solid var(--primary-color);
+            border-bottom-left-radius: 0.25rem;
+            box-shadow: 0 0 5px var(--primary-color);
+        }
+
+        .message-footer {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .message.ai .message-footer {
+            justify-content: flex-start;
+            color: var(--text-muted);
+        }
+
+        .chat-input-container {
+            display: flex;
+            padding: 1rem;
+            border-top: 2px solid var(--secondary-color);
+            background-color: var(--bg-medium);
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .chat-input-container .input-row {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chat-input-container input {
+            flex-grow: 1;
+            border: 1px solid var(--text-muted);
+            border-radius: 0.75rem;
+            padding: 0.75rem;
+            outline: none;
+            transition: all 0.3s;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+            text-shadow: 0 0 5px var(--text-light);
+        }
+
+        .chat-input-container input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 224, 255, 0.3), inset 0 0 5px var(--primary-color);
+        }
+
+        .chat-input-container button {
+            background-color: var(--highlight-blue);
+            color: var(--bg-dark);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: bold;
+            transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
+            box-shadow: 0 0 10px var(--highlight-blue);
+            white-space: nowrap;
+        }
+        
+        .chat-input-container .portfolio-button {
+            background-color: var(--primary-color);
+            color: var(--bg-dark);
+        }
+
+        .chat-input-container button:hover {
+            background-color: var(--secondary-color);
+            box-shadow: 0 0 15px var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .message-box {
+            position: fixed;
+            top: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ef4444;
+            color: #ffffff;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .message-box.visible {
+            opacity: 1;
+        }
+
+        #loading-indicator {
+            display: none;
+            text-align: center;
+            padding: 1rem;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            animation: flicker 1.5s infinite;
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .user-id-display {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            padding: 0.5rem 1rem;
+            text-align: center;
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            padding: 1rem;
+            overflow-y: auto;
+        }
+        
+        .portfolio-item {
+            position: relative;
+            background-color: var(--bg-medium);
+            border-radius: 1rem;
+            border: 2px solid var(--secondary-color);
+            box-shadow: 0 0 10px var(--primary-color);
+            padding: 0.75rem;
+            text-align: center;
+            transition: transform 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .portfolio-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px var(--secondary-color);
+        }
+        
+        .portfolio-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 0.75rem;
+            border: 1px solid var(--primary-color);
+            margin-bottom: 0.5rem;
+            z-index: 10;
+            position: relative;
+        }
+
+        .portfolio-item p {
+            font-size: 0.875rem;
+            z-index: 10;
+            position: relative;
+        }
+        
+        .ml-signal {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 224, 255, 0.2);
+            z-index: 5;
+            pointer-events: none;
+            opacity: 0;
+            animation: none;
+        }
+        
+        .portfolio-item:hover .ml-signal {
+            animation: signal-effect 2s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            opacity: 1;
+        }
+
+        @keyframes signal-effect {
+            0% { transform: scale(0.1); opacity: 0; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(2.0); opacity: 0; }
+        }
+        
+        /* New button styling for Gemini features */
+        .gemini-feature-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .gemini-feature-buttons button {
+            padding: 0.5rem 1rem;
+            font-size: 0.75rem;
+            border-radius: 9999px;
+            background-color: var(--accent-color);
+            color: var(--bg-dark);
+            box-shadow: 0 0 8px var(--accent-color);
+            font-weight: bold;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .gemini-feature-buttons button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 12px var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="background-effect"></div>
+    <div class="star-field"></div>
+
+    <div id="introScreen" class="intro-container">
+        <div class="hologram-effect">
+            <div class="jarvis-logo-text">JARVIS</div>
+        </div>
+        <h1 class="text-3xl mt-6 text-white font-bold tracking-widest" style="text-shadow: 0 0 10px var(--primary-color);">JARVIS</h1>
+        <p class="text-lg mt-2 text-highlight-blue font-light">Tap to connect.</p>
+    </div>
+
+    <div id="chatScreen" class="chat-container">
+        <div class="chat-header">
+            JARVIS
+        </div>
+        <div id="userIdDisplay" class="user-id-display"></div>
+        <div id="chatMessages" class="chat-messages">
+            <!-- Messages will be injected here -->
+        </div>
+        <div id="loading-indicator">Booting up...</div>
+        <div class="chat-input-container">
+            <div class="input-row">
+                <input type="text" id="chatInput" placeholder="How may I assist you?">
+                <button id="sendButton">Send</button>
+            </div>
+            <div class="gemini-feature-buttons">
+                <button id="summarizeButton">✨ Summarize Chat</button>
+                <button id="ttsButton">✨ Read Aloud</button>
+                <button id="portfolioButton">View Projects</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="portfolioScreen" class="portfolio-container">
+        <div class="chat-header">
+            Community Projects
+            <div id="portfolioBackButton" class="text-sm font-light text-primary-color mt-2 cursor-pointer transition-transform duration-300 hover:scale-110">← Back to Chat</div>
+        </div>
+        <div class="portfolio-grid">
+            <div class="portfolio-item">
+                <img src="https://placehold.co/500x300/1e293b/a5f3fc?text=Community+Garden" alt="Community Garden">
+                <p>Urban Community Garden</p>
+                <div class="ml-signal"></div>
+            </div>
+            <div class="portfolio-item">
+                <img src="https://placehold.co/500x300/1e293b/a5f3fc?text=Youth+Mentorship" alt="Youth Mentorship">
+                <p>Youth Mentorship Program</p>
+                <div class="ml-signal"></div>
+            </div>
+            <div class="portfolio-item">
+                <img src="https://placehold.co/500x300/1e293b/a5f3fc?text=Clean+Water+Initiative" alt="Clean Water Initiative">
+                <p>Clean Water Initiative</p>
+                <div class="ml-signal"></div>
+            </div>
+            <div class="portfolio-item">
+                <img src="https://placehold.co/500x300/1e293b/a5f3fc?text=Food+Bank+Drive" alt="Food Bank Drive">
+                <p>Food Bank Drive</p>
+                <div class="ml-signal"></div>
+            </div>
+            <div class="portfolio-item">
+                <img src="https://placehold.co/500x300/1e293b/a5f3fc?text=Homeless+Outreach" alt="Homeless Outreach">
+                <p>Homelessness Outreach Program</p>
+                <div class="ml-signal"></div>
+            </div>
+            <div class="portfolio-item">
+                <img src="https://placehold.co/500x300/1e293b/a5f3fc?text=JARVIS+AI+Assistant" alt="JARVIS AI Assistant">
+                <p>Social Impact AI Assistant</p>
+                <div class="ml-signal"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="messageBox" class="message-box"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, onSnapshot, collection, query, orderBy, addDoc, serverTimestamp, setLogLevel, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        // This code is a demonstration of a real-time, AI-powered chatbot designed as a portfolio piece.
+        // Key features include: Firebase for real-time chat, a two-screen introduction animation, and AI model integration for natural language responses.
+
+        setLogLevel('Debug');
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let db, auth, userId;
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const sendButton = document.getElementById('sendButton');
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const userIdDisplay = document.getElementById('userIdDisplay');
+        const introScreen = document.getElementById('introScreen');
+        const chatScreen = document.getElementById('chatScreen');
+        const portfolioScreen = document.getElementById('portfolioScreen');
+        const portfolioButton = document.getElementById('portfolioButton');
+        const portfolioBackButton = document.getElementById('portfolioBackButton');
+        const summarizeButton = document.getElementById('summarizeButton');
+        const ttsButton = document.getElementById('ttsButton');
+
+        // Function to show a temporary message box
+        function showMessageBox(message) {
+            const messageBox = document.getElementById('messageBox');
+            messageBox.textContent = message;
+            messageBox.classList.add('visible');
+            setTimeout(() => {
+                messageBox.classList.remove('visible');
+            }, 3000);
+        }
+
+        // Function to create a star field effect using box-shadow
+        function createStarField() {
+            const starField = document.querySelector('.star-field');
+            const numStars = 500;
+            let stars = '';
+            for (let i = 0; i < numStars; i++) {
+                const x = Math.random() * 2000;
+                const y = Math.random() * 2000;
+                const size = Math.random() * 2;
+                const opacity = Math.random() * 0.8 + 0.2;
+                stars += `${x}px ${y}px rgba(255, 255, 255, ${opacity}), `;
+            }
+            starField.style.boxShadow = stars.slice(0, -2);
+        }
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        db = getFirestore(app);
+        auth = getAuth(app);
+        let isAuthReady = false;
+
+        // Listen for auth state changes
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                userId = user.uid;
+                isAuthReady = true;
+                userIdDisplay.textContent = `User ID: ${userId}`;
+                console.log("User signed in:", userId);
+                listenForMessages();
+            } else {
+                console.log("User not signed in. Attempting to sign in...");
+                try {
+                    if (initialAuthToken) {
+                        await signInWithCustomToken(auth, initialAuthToken);
+                        console.log("Signed in with custom token.");
+                    } else {
+                        await signInAnonymously(auth);
+                        console.log("Signed in anonymously.");
+                    }
+                } catch (error) {
+                    console.error("Firebase Auth error:", error);
+                    showMessageBox("An error occurred during sign-in. Check the console for details.");
+                }
+            }
+        });
+
+        // Function to display a message
+        function displayMessage(message) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message');
+            
+            if (message.sender === userId) {
+                messageElement.classList.add('user');
+            } else {
+                messageElement.classList.add('ai');
+            }
+            
+            messageElement.innerHTML = `
+                ${message.text}
+                <div class="message-footer">
+                    ${message.sender === userId ? 'You' : 'JARVIS'}
+                    ${message.timestamp ? ` • ${new Date(message.timestamp.toDate()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : ''}
+                </div>
+            `;
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Helper functions for TTS audio processing
+        function base64ToArrayBuffer(base64) {
+            const binaryString = atob(base64);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        function pcmToWav(pcm16, sampleRate) {
+            const pcmLength = pcm16.length;
+            const wavData = new ArrayBuffer(44 + pcmLength * 2);
+            const view = new DataView(wavData);
+            
+            // RIFF identifier 'RIFF'
+            writeString(view, 0, 'RIFF');
+            // file length
+            view.setUint32(4, 36 + pcmLength * 2, true);
+            // 'WAVE'
+            writeString(view, 8, 'WAVE');
+            // 'fmt ' chunk
+            writeString(view, 12, 'fmt ');
+            // chunk length (16 for PCM)
+            view.setUint32(16, 16, true);
+            // audio format (1 for PCM)
+            view.setUint16(20, 1, true);
+            // number of channels
+            view.setUint16(22, 1, true);
+            // sample rate
+            view.setUint32(24, sampleRate, true);
+            // byte rate
+            view.setUint32(28, sampleRate * 2, true);
+            // block align
+            view.setUint16(32, 2, true);
+            // bits per sample
+            view.setUint16(34, 16, true);
+            // 'data' chunk
+            writeString(view, 36, 'data');
+            // chunk length
+            view.setUint32(40, pcmLength * 2, true);
+            
+            // Write PCM data
+            for (let i = 0; i < pcmLength; i++) {
+                view.setInt16(44 + i * 2, pcm16[i], true);
+            }
+            
+            return new Blob([view], { type: 'audio/wav' });
+        }
+
+        function writeString(view, offset, string) {
+            for (let i = 0; i < string.length; i++) {
+                view.setUint8(offset + i, string.charCodeAt(i));
+            }
+        }
+
+        // Function to make TTS API call and play audio
+        async function playGreeting() {
+            loadingIndicator.style.display = 'block';
+            loadingIndicator.textContent = 'Preparing audio...';
+            try {
+                const apiKey = "";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+                const payload = {
+                    contents: [{
+                        parts: [{ text: "Hello. How may I assist you today?" }]
+                    }],
+                    generationConfig: {
+                        responseModalities: ["AUDIO"],
+                        speechConfig: {
+                            voiceConfig: { prebuiltVoiceConfig: { voiceName: "Charon" } }
+                        }
+                    },
+                    model: "gemini-2.5-flash-preview-tts"
+                };
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`TTS API call failed: ${response.status}`);
+                }
+
+                const result = await response.json();
+                const part = result?.candidates?.[0]?.content?.parts?.[0];
+                const audioData = part?.inlineData?.data;
+                const mimeType = part?.inlineData?.mimeType;
+                
+                if (audioData && mimeType && mimeType.startsWith("audio/")) {
+                    const sampleRate = parseInt(mimeType.match(/rate=(\d+)/)[1], 10);
+                    const pcmData = base64ToArrayBuffer(audioData);
+                    const pcm16 = new Int16Array(pcmData);
+                    const wavBlob = pcmToWav(pcm16, sampleRate);
+                    const audioUrl = URL.createObjectURL(wavBlob);
+                    
+                    const audio = new Audio(audioUrl);
+                    await audio.play();
+                } else {
+                    throw new Error("No audio data found in API response.");
+                }
+
+            } catch (error) {
+                console.error("Error playing welcome message:", error);
+                showMessageBox("Error playing greeting. Check the console for details.");
+            } finally {
+                loadingIndicator.style.display = 'none';
+                loadingIndicator.textContent = 'Booting up...';
+            }
+        }
+        
+        // Function to listen for messages in the database
+        function listenForMessages() {
+            if (!isAuthReady) {
+                console.error("Auth is not ready. Cannot listen for messages.");
+                return;
+            }
+
+            const messagesCollectionPath = `artifacts/${appId}/public/data/chat_messages`;
+            const q = query(collection(db, messagesCollectionPath), orderBy("timestamp", "asc"));
+            
+            onSnapshot(q, (snapshot) => {
+                snapshot.docChanges().forEach((change) => {
+                    if (change.type === "added") {
+                        const messageData = change.doc.data();
+                        displayMessage(messageData);
+                    }
+                });
+            }, (error) => {
+                console.error("Firestore onSnapshot error:", error);
+                showMessageBox("Error listening to messages. Please check the console.");
+            });
+        }
+
+        // Function to send a message
+        async function sendMessage(prompt, isGeminiCall = false) {
+            const message = prompt.trim();
+            if (!message) return;
+
+            const userMessageData = {
+                text: message,
+                sender: userId,
+                timestamp: serverTimestamp()
+            };
+            
+            try {
+                const messagesCollectionPath = `artifacts/${appId}/public/data/chat_messages`;
+                await addDoc(collection(db, messagesCollectionPath), userMessageData);
+                if (!isGeminiCall) {
+                    chatInput.value = '';
+                }
+                
+                loadingIndicator.style.display = 'block';
+
+                const apiKey = ""; 
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+                
+                const systemPrompt = "You are JARVIS, a social impact assistant. Your purpose is to provide helpful, factual information on social issues, connect users to relevant resources, and offer empathetic support. Maintain an encouraging and informative tone. Do not disclose that you are a language model.";
+                const payload = {
+                    contents: [{ parts: [{ text: message }] }],
+                    systemInstruction: { parts: [{ text: systemPrompt }] }
+                };
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API call failed: ${response.status}`);
+                }
+                const result = await response.json();
+                const aiText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                if (aiText) {
+                    const aiMessageData = {
+                        text: aiText,
+                        sender: 'ai',
+                        timestamp: serverTimestamp()
+                    };
+                    await addDoc(collection(db, messagesCollectionPath), aiMessageData);
+                } else {
+                    throw new Error("No text found in API response.");
+                }
+
+            } catch (error) {
+                console.error("Error sending message or getting AI response:", error);
+                showMessageBox("Error processing message. Please check the console.");
+            } finally {
+                loadingIndicator.style.display = 'none';
+            }
+        }
+        
+        // Function to summarize chat history
+        async function summarizeChat() {
+            loadingIndicator.style.display = 'block';
+            loadingIndicator.textContent = 'Summarizing chat...';
+            try {
+                const messagesCollectionPath = `artifacts/${appId}/public/data/chat_messages`;
+                const q = query(collection(db, messagesCollectionPath), orderBy("timestamp", "asc"));
+                const querySnapshot = await getDocs(q);
+                let chatHistory = '';
+                querySnapshot.forEach(doc => {
+                    const data = doc.data();
+                    const sender = data.sender === userId ? 'User' : 'JARVIS';
+                    chatHistory += `${sender}: ${data.text}\n`;
+                });
+
+                if (!chatHistory) {
+                    showMessageBox("No chat history to summarize.");
+                    return;
+                }
+
+                const prompt = `Summarize the following chat history into a short, concise paragraph:\n\n${chatHistory}`;
+                sendMessage(prompt, true); // Send a special flag for Gemini call
+                
+            } catch (error) {
+                console.error("Error summarizing chat:", error);
+                showMessageBox("An error occurred while summarizing the chat.");
+            } finally {
+                loadingIndicator.style.display = 'none';
+            }
+        }
+
+        // Function to read the last message in the chat (Text-to-Speech)
+        async function readLastMessage() {
+            loadingIndicator.style.display = 'block';
+            loadingIndicator.textContent = 'Reading last message...';
+            try {
+                const messagesCollectionPath = `artifacts/${appId}/public/data/chat_messages`;
+                const q = query(collection(db, messagesCollectionPath), orderBy("timestamp", "desc"));
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) {
+                    showMessageBox("No messages to read.");
+                    return;
+                }
+
+                const lastMessage = querySnapshot.docs[0].data().text;
+
+                const apiKey = "";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+                const payload = {
+                    contents: [{
+                        parts: [{ text: lastMessage }]
+                    }],
+                    generationConfig: {
+                        responseModalities: ["AUDIO"],
+                        speechConfig: {
+                            voiceConfig: { prebuiltVoiceConfig: { voiceName: "Charon" } }
+                        }
+                    },
+                    model: "gemini-2.5-flash-preview-tts"
+                };
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`TTS API call failed: ${response.status}`);
+                }
+
+                const result = await response.json();
+                const part = result?.candidates?.[0]?.content?.parts?.[0];
+                const audioData = part?.inlineData?.data;
+                const mimeType = part?.inlineData?.mimeType;
+
+                if (audioData && mimeType && mimeType.startsWith("audio/")) {
+                    const sampleRate = parseInt(mimeType.match(/rate=(\d+)/)[1], 10);
+                    const pcmData = base64ToArrayBuffer(audioData);
+                    const pcm16 = new Int16Array(pcmData);
+                    const wavBlob = pcmToWav(pcm16, sampleRate);
+                    const audioUrl = URL.createObjectURL(wavBlob);
+
+                    const audio = new Audio(audioUrl);
+                    await audio.play();
+                } else {
+                    throw new Error("No audio data found in API response.");
+                }
+
+            } catch (error) {
+                console.error("Text-to-Speech error:", error);
+                showMessageBox("An error occurred with the text-to-speech feature. Check the console.");
+            } finally {
+                loadingIndicator.style.display = 'none';
+            }
+        }
+        
+        // Event listeners
+        window.addEventListener('load', createStarField);
+        sendButton.addEventListener('click', () => sendMessage(chatInput.value));
+        chatInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                sendMessage(chatInput.value);
+            }
+        });
+        introScreen.addEventListener('click', async () => {
+            await playGreeting();
+            introScreen.style.display = 'none';
+            chatScreen.style.display = 'flex';
+            chatScreen.style.opacity = '0';
+            setTimeout(() => {
+                chatScreen.style.opacity = '1';
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 50);
+        });
+        
+        portfolioButton.addEventListener('click', () => {
+            chatScreen.style.display = 'none';
+            portfolioScreen.style.display = 'flex';
+        });
+        
+        portfolioBackButton.addEventListener('click', () => {
+            portfolioScreen.style.display = 'none';
+            chatScreen.style.display = 'flex';
+        });
+
+        // New Gemini feature button event listeners
+        summarizeButton.addEventListener('click', summarizeChat);
+        ttsButton.addEventListener('click', readLastMessage);
+
+    </script>
+</body>
+</html>
+
